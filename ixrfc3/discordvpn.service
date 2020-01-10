@@ -1,0 +1,10 @@
+[Unit]
+Description=DiscordVPN
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/root/discordvpn/discordvpn.py
+
+[Install]
+WantedBy=multi-user.target
