@@ -1,0 +1,232 @@
+IX Internet Architecture Board (IXIAB)                                          R. Faden
+IX Request for Comments: 1                                                      May 2019
+Category: IX Standard
+ISSN: Meme-Ware
+
+
+                                  IX90 over Discord Chat
+
+Abstract
+
+   We are coming close to the point where internet is too reliable and fast, which is why
+   we have decided to implement IX90, the past of the internet. In this document we will 
+   be detailing the specifications of how to transfer data over discord chat, and how 
+   this destroys performance and stability. We are doing this for the sake of experience,
+   and to show that this is possible. 
+
+
+
+
+
+
+Faden                                  IX Standard                              [Page 1]
+
+IXRFC 1                           IX90 over Discord Chat                        May 2019
+
+Copyright Notice
+
+  Copyright (c) 2019 DETF and the persons authoring this document. No rights reserved.
+
+Table of Contents
+
+   1. Introduction ................................................................... 1
+   2. Terminology .................................................................... 1
+   3. Problem Statement .............................................................. 2
+   4. Specification of Transport ..................................................... 2
+      4.1. Connection to Discord ..................................................... 2
+      4.2. Transport of Packet Data .................................................. 2
+      4.3. Reception of Discord Messages ............................................. 3
+   5. Additional Considerations ...................................................... 4
+   6. References ..................................................................... 4
+
+1.  Introduction
+
+   In 2019, we discovered after a great amount of research and inter-personal data,
+   that although many people have access to high-speed, high-bandwidth networks thanks
+   to prior innovations and developments, not that many of them actually know about the
+   fact that the internet was as feeble as a newborn elk, it was beautiful to observe, 
+   but it was just as weak and useless. Unlike traditional transport schemes, whose 
+   new designs are characterised by performance and reliability, the design of ix90's 
+   soft ergonomics is based upon a philosophy of appreciation. Psychological studies 
+   reveal that challenging and laborious tasks feel more rewarding than tasks which are 
+   not. Consequently, despite the internet's many innovations, the internet fails to 
+   amuse users. ix90 seeks to resolve this through a principle known as 'dick teasing'.
+   A slow and unstable internet encourages users to appreciate the times when it 
+   functions adequately.
+
+2.  Terminology
+   
+   This document uses various terms distributed throughout both past RFCs and other 
+   online resources, many of them will be repeated below for Convenience.
+
+      Internet: A metaphorical net of computers or internet-connectable devices, that
+      allows for connections between any of which.
+
+      Discord: A free, centralized, TCP/IP chat and call service in current time that
+      allows for conversations between any two members of its community through its 
+      own specified transports.
+
+      Base64: An encoding used to transfer or store binary data in environments that 
+      for whatever reason are restricted to US-ASCII. As explained in [RFC4648].
+
+      Websocket: A protocol allowing for two-way communication between a client in a
+      controlled environment to a remote host. As explained in [RFC6455].
+
+      HTTP: A protocol designed to allow transport of hypertext over the internet.
+      This process is explained in many RFCs, with the most current and central at this
+      time being [RFC2616].
+
+      HTTP over TLS (or HTTPS): A protocol designed to allow transport of insecure HTTP
+      data over a secure TLS stream. Explained further in [RFC2818]. 
+
+
+Faden                                  IX Standard                              [Page 2]
+
+IXRFC 1                           IX90 over Discord Chat                        May 2019
+
+
+3. Problem Statement
+
+    The issue with our intent is that in fact, most transports that we would want to use
+    for our IX90 platform are already themselves high-speed and reliable. Except for one,
+    Discord. Now, the problem seems quite simple, just send data through Discord and 
+    receive it,  but there are indeed many roadblocks preventing such a simple process 
+    from truly bringing this dream, or nightmare rather, to fruition. This specification 
+    dictates our current solution, alongside the benifits and issues we discovered while
+    working with this data transport.
+
+4. Specification of Transport
+
+    The transport of data through Discord can be explained three-fold, first we discuss 
+    the methods of contact with Discord, then we discuss how data is sent, and 
+    subsequently how data must be received.
+
+4.1 Connection to Discord
+
+    This part is quite simple, because of the tools that discord has given us. The first
+    step to this process is to visit the Discord App developer dashboard and not only 
+    create an application of your own, but also activate the bot feature of said 
+    application. This will provide you with a "Client Token", which is essentially the 
+    password that your connection to the Discord system requires for all accounts, bot 
+    or otherwise.
+   
+    Once this token is obtained and securely stored, you may begin to send and receive
+    data. 
+    To send data to Discord chat you must send HTTP(S) web requests to Discord's 
+    webservers, through endpoints, methods, and formats explained on their developer 
+    dashboard. 
+    To receive data from Discord chat you can go two ways. You can either request a 
+    list of past messages from Discord's webservers. Or you can connect to Discord 
+    through a websocket service they host that allows for live updates on when messages 
+    are sent.
+
+4.2 Transport of Packet Data
+   
+    The use of Discord chat as a transport hub was painfully difficult, but we made it 
+    work. The main concept is that any packet you send through discord chat must be
+    encoded by Base64, and sent in conjunction with other packets, separated by newlines,
+    on an interval.
+ 
+    The first problem faced when contemplating this idea was the fact that Discord, 
+    along with many other chat applications, does not allow for all bytes (0-255) to be 
+    sent, with some being marked illegal and being discarded / blocked. The solution we 
+    found for this problem was to encode all of our data in Base64, which allows for a 
+    transport efficiency of exactly 74.9%, meaning that for every 749 bytes of data we 
+    send, 1000 bytes of base64 are required, 251 bytes of which are used for padding and
+    encoding. This is bad, but not nearly as problematic as the next issues faced.
+
+    The second issue nearly obscoleted us. Discord only allows you to send five messages 
+    every five seconds or so, and refuses to accept any more, which can cause problems 
+    not only for high-throughput activities but also for low-latency applications. We 
+    considered many solutions for this but since the limit is truly out of our hands,
+    we bunkered down on a method that allows for transporting multiple packets in one 
+    message. But this again is impeaded by the next issue.
+
+    The third issue faced is not as bad on it's own, but combined with the others it 
+    manages to create an environment that truly limits the capabilities of IX90, which
+    can be regarded as both a good thing and a bad thing. The Discord platform only 
+    permits messages that are within 2000 bytes of length. This means that our longest
+    possible packet can only be 1498 bytes of binary, because of the limitation in 
+    place from using Base64 encoding. Alongside the time-limit, this issue truly creates
+    a hostile environment for high-activity networks.
+
+Faden                                  IX Standard                              [Page 3]
+
+IXRFC 1                           IX90 over Discord Chat                        May 2019
+
+    The specifications for IX90 Transport over Discord Chat as of IXRFC-1: 
+        - All packets must be encoded in Base64 prior to concatenation.
+        - Messages can contain multiple packets, each packet being individually encoded
+          in Base64 and concatonated together with newline characters "\n".
+        - All packets must be less than 1498 bytes in size, this is effectively the 
+          MTU of our protocol, as 1498 bytes of binary translates to exactly 2000 
+          US-ASCII characters of Base64.
+
+    As Discord messages are only sent to specific distinct chats, or "channels", the
+    user needs to specify to the program which channel they would like to use as a
+    transmission hub, and must ensure that all other members of their network also 
+    use the same channel in order to send/receive to that user.
+
+
+4.3 Reception of Discord Messages
+    
+    Fortunately, the reception of Discord messages is not nearly as tedious, since the
+    platform does not enlist any severe limitations on message reception.
+    
+    Of the two methods of reception discussed in section 4.1, it is clear that the live
+    reception of messages through websocket is truly superior for this use-case. Since
+    we benefit greatly from the packets comming in as they are sent, rather than having
+    to manually check for new messages through a webserver endpoint.
+
+    The one main concern with reception is that Discord sends your own transmissions 
+    back to you, but this can easily be either ignored since the packets are meant to
+    be standard network packets and should not cause any issues. For sanity's sake it
+    is suggested that your client simply filter out any messages sent by itself.
+
+    The reception of packets is exactly opposite of the transmission:
+       1. Connect to the Discord websocket system, ensuring your client/bot has access
+          to the channel you are using as a transmission hub.
+       2. Await incoming messages on the channel you are using as a hub, filtering your 
+          own user and other channels out as you find necessary.
+       3. Split the newly received message up by the agreed upon separator for packets,
+          in this standard it is the NEWLINE ("\n") character
+       4. Base64 decode each of the individual packets
+       5. Do whatever you wish with the data you have retreived.
+    
+Faden                                  IX Standard                              [Page 4]
+
+IXRFC 1                           IX90 over Discord Chat                        May 2019
+
+5. Additional Considerations
+  
+    While creating this standard specification and discovering the plethora of issues 
+    with our design, we also came up with many additional considerations that could
+    possibly be implemented at a later date.
+
+    The following list contains all of the ideas we came up with during the development
+    of this standard, along with either "TENTATIVE" if they are not confirmed at the time
+    of this RFC or "REJECTED" if they were declined for valid reason by the IX90 DETF.
+       - (REJECTED) Transmission of data with other encodings. Rejected because of the 
+           difficulty of creating efficient standardized encodings across multiple 
+           platforms.
+       - (TENTATIVE) Transmission of larger packets (perhaps even megabytes in size) using
+          file uploads.
+       - (REJECTED) Transmission of different types of data over the same hub. Rejected 
+           because of additional complications it would create for little gain.
+       	
+6. References
+
+
+   [RFC2616] Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., Leach, P., and
+             T. Berners-Lee, "Hypertext Transfer Protocol -- HTTP/1.1", RFC 2616, 
+             DOI 10.17487/RFC2616, June 1999, <https://www.rfc-editor.org/info/rfc2616>.
+
+   [RFC2818] Rescorla, E., "HTTP Over TLS", RFC 2818, DOI 10.17487/RFC2818, May 2000,
+             <https://www.rfc-editor.org/info/rfc2818>.
+
+   [RFC4648] Josefsson, S., "The Base16, Base32, and Base64 Data Encodings", RFC 4648, 
+             DOI 10.17487/RFC4648, October 2006, <https://www.rfc-editor.org/info/rfc4648>.
+
+   [RFC6455] Fette, I. and A. Melnikov, "The WebSocket Protocol", RFC 6455, 
+             DOI 10.17487/RFC6455, December 2011, <https://www.rfc-editor.org/info/rfc6455>.
+     
