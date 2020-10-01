@@ -3,6 +3,7 @@ IX is Internet eXchange
 
 IX, over Discord
 what else can I say.
+Alot actually, read my [writeup](https://github.com/RaidAndFade/IX90/blob/master/ixrfc1.txt)
 
 
 IXRFC1-Patch4 works out of the box, just modify settings.py and go
